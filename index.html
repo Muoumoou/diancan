@@ -473,14 +473,12 @@
             }
 
             currentUser = username;
-            localStorage.setItem('currentUser', username);
             showOrderPage();
         }
 
         // 退出登录
         function logout() {
             currentUser = null;
-            localStorage.removeItem('currentUser');
             cart = [];
             showPage('loginPage');
         }
@@ -546,15 +544,9 @@
             showOrderPage();
         }
 
-        // 页面加载时检查登录状态
+        // 页面加载时始终显示登录页面
         window.onload = function() {
-            const savedUser = localStorage.getItem('currentUser');
-            if (savedUser) {
-                currentUser = savedUser;
-                showOrderPage();
-            } else {
-                showPage('loginPage');
-            }
+            showPage('loginPage');
         };
 
         // 以下购物车功能保持不变（同之前版本）
