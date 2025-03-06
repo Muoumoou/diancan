@@ -5,15 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>在线点餐系统</title>
     <style>
+        :root {
+            --primary-color: #ff6b6b;
+            --primary-dark: #ff5252;
+            --secondary-color: #4ecdc4;
+            --text-color: #2d3436;
+            --background-color: #f8f9fa;
+            --card-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            --transition: all 0.3s ease;
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+            transition: var(--transition);
         }
 
         body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f5f5f5;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
         }
 
         .container {
@@ -25,141 +38,396 @@
         /* 登录/注册表单 */
         .auth-form {
             background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            width: 300px;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: var(--card-shadow);
+            width: 360px;
             margin: 50px auto;
+            transform: translateY(0);
+        }
+
+        .auth-form:hover {
+            transform: translateY(-5px);
+        }
+
+        .auth-form h2 {
+            color: var(--text-color);
+            margin-bottom: 25px;
+            text-align: center;
+            font-size: 1.8em;
+            font-weight: 600;
         }
 
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
         input[type="text"],
         input[type="password"] {
             width: 100%;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: var(--transition);
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.1);
         }
 
         button {
-            background: #4CAF50;
+            background: var(--primary-color);
             color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 4px;
+            padding: 12px 24px;
+            border-radius: 8px;
             cursor: pointer;
             width: 100%;
+            font-size: 16px;
+            font-weight: 600;
+            transform: translateY(0);
+        }
+
+        button:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
         }
 
         .toggle-form {
             text-align: center;
-            margin-top: 15px;
+            margin-top: 20px;
             color: #666;
             cursor: pointer;
+            font-size: 14px;
         }
 
-        /* 点餐界面 */
+        .toggle-form:hover {
+            color: var(--primary-color);
+        }
+
+        /* 主界面 */
         .main-interface {
-            display: none; /* 默认隐藏 */
+            display: none;
+            gap: 30px;
         }
 
         /* 菜单样式 */
         .menu {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
             margin: 20px 0;
         }
 
         .menu-item {
             background: white;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: var(--card-shadow);
+            display: flex;
+            flex-direction: column;
+            transform: translateY(0);
+        }
+
+        .menu-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .menu-item h3 {
+            font-size: 1.8em;
+            margin-bottom: 15px;
+            color: var(--text-color);
+        }
+
+        .menu-item p {
+            font-size: 1.4em;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .menu-item button {
+            background: var(--secondary-color);
+            margin-top: auto;
+        }
+
+        .menu-item button:hover {
+            background: #45b7af;
         }
 
         /* 购物车样式 */
         .cart {
             background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            position: fixed;
-            right: 20px;
-            bottom: 20px;
-            width: 300px;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: var(--card-shadow);
+            width: 350px;
+            position: sticky;
+            top: 20px;
         }
 
-        @media (max-width: 768px) {
+        .cart h3 {
+            font-size: 1.4em;
+            margin-bottom: 20px;
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #cart-items {
+            margin-bottom: 20px;
+        }
+
+        #cart-items > div {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+            font-size: 1.1em;
+        }
+
+        .cart-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .cart-controls button {
+            width: 24px;
+            height: 24px;
+            padding: 0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            background: var(--secondary-color);
+            min-width: 24px;
+        }
+
+        .cart p {
+            font-size: 1.2em;
+            margin: 20px 0;
+            padding: 15px 0;
+            border-top: 2px solid #eee;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .cart button[onclick="checkout()"] {
+            background: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .cart button[onclick="logout()"] {
+            background: #666;
+        }
+
+        .cart button[onclick="logout()"]:hover {
+            background: #555;
+        }
+
+        @media (min-width: 768px) {
+            .main-interface {
+                display: flex;
+                flex-direction: row;
+            }
+            
             .menu {
-                grid-template-columns: 1fr;
+                flex: 2;
             }
             
             .cart {
-                position: static;
-                width: 100%;
+                flex: 1;
             }
+        }
+
+        @media (max-width: 767px) {
+            .auth-form {
+                width: 90%;
+                margin: 20px auto;
+            }
+
+            .cart {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                width: 100%;
+                margin: 0;
+                border-radius: 16px 16px 0 0;
+                box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+                z-index: 1000;
+            }
+
+            .menu {
+                margin-bottom: 200px;
+            }
+        }
+
+        /* 页面切换动画 */
+        .page {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .page.active {
+            display: block;
+            opacity: 1;
+        }
+
+        /* 导航栏样式 */
+        .nav-bar {
+            background: white;
+            padding: 15px 25px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 30px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-bar h1 {
+            color: var(--text-color);
+            font-size: 1.6em;
+            margin: 0;
+        }
+
+        .nav-bar .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .nav-bar button {
+            width: auto;
+            padding: 8px 16px;
+            background: var(--secondary-color);
+        }
+
+        .nav-bar .username {
+            color: var(--primary-color);
+            font-weight: 600;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- 登录/注册表单 -->
-        <div class="auth-form" id="loginForm">
-            <h2>用户登录</h2>
-            <div class="form-group">
-                <input type="text" id="loginUsername" placeholder="用户名" required>
-            </div>
-            <div class="form-group">
-                <input type="password" id="loginPassword" placeholder="密码" required>
-            </div>
-            <button onclick="login(event)">登录</button>
-            <div class="toggle-form" onclick="showRegisterForm()">没有账号？立即注册</div>
-        </div>
-
-        <div class="auth-form" id="registerForm" style="display: none;">
-            <h2>用户注册</h2>
-            <div class="form-group">
-                <input type="text" id="regUsername" placeholder="用户名" required>
-            </div>
-            <div class="form-group">
-                <input type="password" id="regPassword" placeholder="密码" required>
-            </div>
-            <button onclick="register(event)">注册</button>
-            <div class="toggle-form" onclick="showLoginForm()">已有账号？立即登录</div>
-        </div>
-
-        <!-- 主界面 -->
-        <div class="main-interface" id="mainInterface">
-            <div class="menu">
-                <div class="menu-item">
-                    <h3>汉堡包 🍔</h3>
-                    <p>价格：￥25</p>
-                    <button onclick="addToCart('汉堡包', 25)">加入购物车</button>
+        <!-- 登录页面 -->
+        <div id="loginPage" class="page active">
+            <div class="auth-form" id="loginForm">
+                <h2>用户登录</h2>
+                <div class="form-group">
+                    <input type="text" id="loginUsername" placeholder="用户名" required>
                 </div>
-                <div class="menu-item">
-                    <h3>披萨 🍕</h3>
-                    <p>价格：￥45</p>
-                    <button onclick="addToCart('披萨', 45)">加入购物车</button>
+                <div class="form-group">
+                    <input type="password" id="loginPassword" placeholder="密码" required>
+                </div>
+                <button onclick="login(event)">登录</button>
+                <div class="toggle-form" onclick="showRegisterForm()">没有账号？立即注册</div>
+            </div>
+
+            <div class="auth-form" id="registerForm" style="display: none;">
+                <h2>用户注册</h2>
+                <div class="form-group">
+                    <input type="text" id="regUsername" placeholder="用户名" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="regPassword" placeholder="密码" required>
+                </div>
+                <button onclick="register(event)">注册</button>
+                <div class="toggle-form" onclick="showLoginForm()">已有账号？立即登录</div>
+            </div>
+        </div>
+
+        <!-- 点餐页面 -->
+        <div id="orderPage" class="page">
+            <div class="nav-bar">
+                <h1>在线点餐系统</h1>
+                <div class="user-info">
+                    <span class="username"></span>
+                    <button onclick="showCheckoutPage()">去结账</button>
+                    <button onclick="logout()">退出登录</button>
                 </div>
             </div>
 
-            <div class="cart">
-                <h3>购物车 🛒</h3>
-                <div id="cart-items"></div>
-                <p>总价：￥<span id="total">0</span></p>
-                <button onclick="checkout()">模拟结账</button>
-                <button onclick="logout()" style="margin-top: 10px; background: #666;">退出登录</button>
+            <div class="main-interface">
+                <div class="menu">
+                    <div class="menu-item">
+                        <h3>汉堡包 🍔</h3>
+                        <p>价格：￥25</p>
+                        <button onclick="addToCart('汉堡包', 25)">加入购物车</button>
+                    </div>
+                    <div class="menu-item">
+                        <h3>披萨 🍕</h3>
+                        <p>价格：￥45</p>
+                        <button onclick="addToCart('披萨', 45)">加入购物车</button>
+                    </div>
+                    <div class="menu-item">
+                        <h3>炸鸡 🍗</h3>
+                        <p>价格：￥35</p>
+                        <button onclick="addToCart('炸鸡', 35)">加入购物车</button>
+                    </div>
+                    <div class="menu-item">
+                        <h3>薯条 🍟</h3>
+                        <p>价格：￥15</p>
+                        <button onclick="addToCart('薯条', 15)">加入购物车</button>
+                    </div>
+                </div>
+
+                <div class="cart">
+                    <h3>购物车 🛒</h3>
+                    <div id="cart-items"></div>
+                    <p>
+                        <span>总计</span>
+                        <span>￥<span id="total">0</span></span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 结账页面 -->
+        <div id="checkoutPage" class="page">
+            <div class="nav-bar">
+                <h1>订单结算</h1>
+                <div class="user-info">
+                    <span class="username"></span>
+                    <button onclick="showOrderPage()">返回点餐</button>
+                    <button onclick="logout()">退出登录</button>
+                </div>
+            </div>
+
+            <div class="cart" style="width: 100%; max-width: 600px; margin: 0 auto;">
+                <h3>订单详情</h3>
+                <div id="checkout-items"></div>
+                <p>
+                    <span>总计</span>
+                    <span>￥<span id="checkout-total">0</span></span>
+                </p>
+                <button onclick="confirmCheckout()">确认支付</button>
             </div>
         </div>
     </div>
 
     <script>
         // 用户数据存储结构
-        let users = JSON.parse(localStorage.getItem('users')) || [];
+        let users = JSON.parse(localStorage.getItem('users')) || [
+            { username: 'shanghang', password: 'shanghang' }  // 添加默认账户
+        ];
+        
+        // 确保默认用户存在
+        if (!users.some(user => user.username === 'shanghang')) {
+            users.push({ username: 'shanghang', password: 'shanghang' });
+            localStorage.setItem('users', JSON.stringify(users));
+        }
+
         let currentUser = null;
         let cart = [];
 
@@ -206,23 +474,76 @@
 
             currentUser = username;
             localStorage.setItem('currentUser', username);
-            showMainInterface();
-        }
-
-        // 显示主界面
-        function showMainInterface() {
-            document.querySelector('.auth-form').style.display = 'none';
-            document.getElementById('mainInterface').style.display = 'block';
+            showOrderPage();
         }
 
         // 退出登录
         function logout() {
             currentUser = null;
             localStorage.removeItem('currentUser');
-            document.getElementById('mainInterface').style.display = 'none';
-            document.getElementById('loginForm').style.display = 'block';
             cart = [];
+            showPage('loginPage');
+        }
+
+        // 页面切换函数
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+            
+            // 更新用户名显示
+            if (currentUser) {
+                document.querySelectorAll('.username').forEach(el => {
+                    el.textContent = `当前用户：${currentUser}`;
+                });
+            }
+        }
+
+        function showOrderPage() {
+            showPage('orderPage');
+            document.querySelector('.main-interface').style.display = 'flex';
             updateCartDisplay();
+        }
+
+        function showCheckoutPage() {
+            if (cart.length === 0) {
+                alert('购物车为空！');
+                return;
+            }
+            showPage('checkoutPage');
+            updateCheckoutDisplay();
+        }
+
+        // 更新结账页面显示
+        function updateCheckoutDisplay() {
+            const checkoutItems = document.getElementById('checkout-items');
+            const totalElement = document.getElementById('checkout-total');
+            let total = 0;
+            let html = '';
+            
+            cart.forEach(item => {
+                total += item.price * item.quantity;
+                html += `
+                    <div style="padding: 15px 0; border-bottom: 1px solid #eee;">
+                        <div style="display: flex; justify-content: space-between;">
+                            <strong>${item.name}</strong>
+                            <span>￥${item.price} × ${item.quantity} = ￥${item.price * item.quantity}</span>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            checkoutItems.innerHTML = html;
+            checkoutItems.style.margin = '20px 0';
+            totalElement.textContent = total;
+        }
+
+        // 确认支付
+        function confirmCheckout() {
+            alert(`模拟支付成功！感谢 ${currentUser} 的光临！`);
+            cart = [];
+            showOrderPage();
         }
 
         // 页面加载时检查登录状态
@@ -230,7 +551,9 @@
             const savedUser = localStorage.getItem('currentUser');
             if (savedUser) {
                 currentUser = savedUser;
-                showMainInterface();
+                showOrderPage();
+            } else {
+                showPage('loginPage');
             }
         };
 
@@ -255,9 +578,14 @@
                 total += item.price * item.quantity;
                 html += `
                     <div>
-                        ${item.name} × ${item.quantity} 
-                        <button onclick="updateQuantity('${item.name}', ${item.quantity + 1})">+</button>
-                        <button onclick="updateQuantity('${item.name}', ${item.quantity - 1})">-</button>
+                        <div>
+                            <strong>${item.name}</strong>
+                            <div>￥${item.price} × ${item.quantity}</div>
+                        </div>
+                        <div class="cart-controls">
+                            <button onclick="updateQuantity('${item.name}', ${item.quantity - 1})">-</button>
+                            <button onclick="updateQuantity('${item.name}', ${item.quantity + 1})">+</button>
+                        </div>
                     </div>
                 `;
             });
@@ -273,21 +601,6 @@
             } else {
                 item.quantity = newQuantity;
             }
-            updateCartDisplay();
-        }
-
-        function checkout() {
-            if (!currentUser) {
-                alert('请先登录！');
-                return;
-            }
-            if (cart.length === 0) {
-                alert('购物车为空！');
-                return;
-            }
-            
-            alert(`模拟支付成功！感谢 ${currentUser} 的光临！`);
-            cart = [];
             updateCartDisplay();
         }
     </script>
